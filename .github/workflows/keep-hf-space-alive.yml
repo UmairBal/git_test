@@ -1,0 +1,26 @@
+name: Keep HF Space Alive
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping HuggingFace Space
+        run: |
+          URL="https://ubaloch1313-futures-bot.hf.space"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+          echo "HTTP Status: $STATUS"
+
+      - name: Wait 5 minutes
+        run: sleep 300
+
+      - name: Trigger workflow again
+        run: |
+          curl -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/actions/workflows/keep-hf-space-alive.yml/dispatches \
+          -d '{"ref":"main"}'
