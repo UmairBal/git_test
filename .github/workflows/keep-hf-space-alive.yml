@@ -11,7 +11,12 @@ jobs:
       - name: Ping HuggingFace Space
         run: |
           URL="https://ubaloch1313-futures-bot.hf.space"
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+          TOKEN="${{ secrets.HF_TOKEN }}"
+
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+          -H "Authorization: Bearer $TOKEN" \
+          "$URL")
+
           echo "HTTP Status: $STATUS"
 
       - name: Wait 5 minutes
